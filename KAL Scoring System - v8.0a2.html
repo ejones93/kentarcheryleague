@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>KAL Score System v8.0a</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="description" content="" />
+    <link rel="icon" href="favicon.png">
+    <style type="text/css">
+        [hidden] {
+            display: none !important;
+        } body {
+            font-family: Arial, Helvetica, sans-serif;
+        } h1,h2,h3,h4 {
+            text-align: center;
+            margin: 0;
+        } span {
+            font-size: 0.8rem;
+        } p,ul,li,u {
+            text-align: left;
+        } table {
+            border-collapse: collapse;    
+        }@media only screen {
+            #main {
+                min-width: 928px;
+            }
+        }@media only screen and (max-width: 1320px) {
+            th {
+                font-size: 0.9rem;
+            }
+        }@media only screen and (max-width: 1280px) {
+            th {
+                font-size: 0.8rem;
+            }
+        }@media only screen and (max-width: 1240px) {
+            .hide {
+                display: none;
+            }
+        }@media only screen and (max-width: 1090px) {
+            .hidemore {
+                display: none;
+            }
+        } #howtoContainer {
+            background-color: blanchedalmond;
+            border-radius: 1rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: center;
+        } #howtoContainer div:first-child {
+            display: flex;
+            align-items: baseline;
+            gap: 1rem;
+        } select#home,
+          select#away,
+          input#date {
+            border-radius: 1rem;
+            padding: 0.5rem;
+        } select#home:hover,
+          select#away:hover,
+          input#date:hover {
+            overflow: hidden !important;
+        } .sorter {
+            text-decoration: underline;
+        } .sorter:hover {
+            background-color: lightgray;
+        } input,select {
+            background-color: transparent;
+            border: 1px solid grey;
+            font-family: Arial, Helvetica, sans-serif;
+        } #main {
+            margin: 2rem auto;
+        }@media only screen and (min-width: 1450px) {
+            #main {
+                max-width: 1450px;
+            }
+        } #settings {
+            display: flex;
+            gap: 2rem;
+            margin: 1rem 0;
+        } #settings div {
+            text-align: center;
+            padding: 0.8rem 0;
+            flex-grow: 1;
+            border-radius: 1rem;
+        } #archers tr td {
+            text-align: center;
+        } #archers tr td:first-child input, #noOfArchers {
+            max-width: 1.8rem;
+        } #archers tr td:nth-child(3) input {
+            max-width: 8.5rem;
+        } #archers tr td:nth-child(9) input,
+          #archers tr td:nth-child(11) input,
+          #archers tr td:nth-child(12) input,
+          #archers tr td:nth-child(13) input {
+            max-width: 2.3rem;
+        } .error {
+            background-color: lightcoral;
+            font-weight: 600;
+            border-color: black;
+        } .home {
+            background-color: lightblue;
+        } .away {
+            background-color: lightgoldenrodyellow;
+        } .date,.draw {
+            background-color: darkseagreen;
+        } .illegal td{
+            color: gray;
+            border-top:2px solid red;
+            border-bottom:2px solid red;
+        } #addArchers {
+            margin-bottom: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        } #addArchers input, #addArchers select {
+            border: revert;
+            background: revert;
+        } #buttons {
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+        } button {
+            border-radius: 0.5rem;
+            padding: 0.5rem;
+            border: 1px solid grey;
+        } button:hover {
+            filter:brightness(60%);
+        } .scoresheetHead,
+          .scoresheetBody,
+          #targetList,
+          #archerList {
+            width: 100%;
+        } .scoresheetHead, #targetList {
+            margin: 0.5rem 0;
+        } #targetList th {
+            background-color: lightblue;
+        } #targets tr:nth-of-type(even){
+            background-color: whitesmoke;
+        } .scoresheetHead th {
+            width: 11%;
+            background-color: lightblue;
+        } .scoresheetHead td:nth-child(4),
+          .scoresheetHead td:nth-child(6){
+            width: 16%;
+        } .scoresheetBody th {
+            text-align: center;
+            background-color: lightgray;
+        } .scoresheetBody tr td:nth-child(7),
+          .scoresheetBody tr td:nth-child(14) {
+            width: 5%;
+            border: 1px solid black;
+        } .distTotals {
+            padding-right: 1rem;
+            text-align: right;
+            background-color: lightgray;
+        } .sign {
+            display: flex;
+        } .sign div {
+            min-width: 40%;
+            min-height: 4rem;
+            margin: 0.5rem;
+            border-bottom: 1px solid black;
+        } #results {
+            width: fit-content;
+            margin: auto;
+            text-align: center;
+        } #results table {
+            margin: 1rem 0;
+            font-size: 130%;
+        } .blank {
+            min-width: 1rem;
+            border: none;
+        }
+    </style>
+    <style type="text/css" media="print">
+        #buttons { 
+            display: none; 
+        } #main {
+            margin: 0;
+            min-width: none;
+        } #main h1, #main h3 { 
+            display: none; 
+        } body {
+            -webkit-print-color-adjust:exact !important;
+            print-color-adjust:exact !important;
+            font-size: 70%;
+        } .pagebreak { 
+            page-break-before: always;
+        }
+    </style>
+    <style id="orientation" type="text/css" media="print">
+    </style>
+</head>
+<body onload="readData()">
+    <div id="main">    
+        <h1>Kent Archery League - Scoring System</h1>
+        <h3 id="version"></h3>
+        <div id="howtoContainer" onclick="document.getElementById('howto').hidden = document.getElementById('howto').hidden ? false : true; 
+                                          document.getElementById('show').hidden = document.getElementById('show').hidden ? false : true;">
+            <div>
+                <h3>How To...</h3>
+                <h4 id="show" hidden>click to show</h4>
+            </div>
+            <div id="howto">
+                <p><u>For the Away Team:</u></p>
+                <ul>
+                    <li>Set the Home and Away clubs, as well as the date of the match</li>
+                    <li>Choose how many archers you want to add for your team (more can be added later), select away, click add</li>
+                    <li>Enter details for each archer</li>
+                    <li>Click 'Save Data' and email the downloaded file to the KAL rep for the home club, please remember to CC all@kentarcheryleague.co.uk</li>
+                </ul>
+                <p><u>For the Home Team:</u>
+                <ul>
+                    <li>Click on 'Load Data' and choose the file sent by the Away Team</li>
+                    <li>Choose how many archers you want to add for your team (more can be added later), select home, click add</li>
+                    <li>Enter details for each archer</li>
+                    <li>Click 'Save Data' to avoid any changes being lost</li>
+                    <li>Click 'Print Scoresheets' to print all of the scoresheets required</li>
+                </ul>
+                <p><u>On the day of the match</u></p>
+                <ul>
+                    <li>Once the shoot has finished enter the hits, score and golds for each archer</li>
+                    <li>Click 'Print Results' to get the final results</li>
+                    <li>Click 'Save Data' to download the full results from the shoot, please email a copy to all@kentarcheryleague.co.uk, and send a copy of all scoresheets to the league Records Officer</li>
+                </ul>
+                <p><u>Formatting</u></p>
+                <ul>
+                    <li>Archer rows where the top and bottom borders are red, and the totals (on the right) are shooting rounds that are too short by the league rules, and are not included in the results</li>
+                    <li>Red target number and position means that either there is an archer on the same target not shooting the same round or that there are two archers in the same spot</li>
+                    <li>Red hits and score means that the hits or score cannot be correct (odds/evens)</li>
+                    <li>Red hits and golds means that hits are lower than the golds</li>
+                    <li>Red hits, score & golds means that the score is either too high, or too low for the number of hits and golds given</li>
+                </ul>
+                <p><u>Sorting</u></p>
+                <p>The archer rows are sorted by target position by default. Clicking one of the underlined headers will sort all rows by that column. The current column being used for sorting is highlighted in green.
+                   <br/>Sorting is only done on page refresh, if you want to sort again after making changes refresh the page (F5) or click on the column header again. 
+                </p>
+                <h4>click to hide</h4>
+            </div>
+        </div>
+        <div id="settings"></div>
+        <div id="addArchers">
+            <div><h3>Add New Archers</h3></div>
+            <div><sub>Loading data overwrites all archers, please load the Away Teams file before adding Home archers.</sub><br>&nbsp;</div>
+            <div>
+                <label for="noOfArchers">Quantity:</label>
+                <input id="noOfArchers" type="number" min="1" max="100" value="1" />
+                <label for="newArcherTeam">Team:</label>
+                <select id="newArcherTeam">
+                    <option value="Home">Home</option>
+                    <option value="Away">Away</option>
+                </select>
+                <button id="addArcher" onclick="addArcher()">Add</button>
+            </div>
+        </div>
+        <div id="buttons">
+            <div id="print">
+                <button onclick="targetList()">Print Target List</button>
+                <button onclick="scoresheets()">Print Scoresheets</button>
+                <button onclick="results()">Print Results</button>
+                <button hidden id="unhide" onclick="unhideMain()">Back</button>
+            </div>
+            <div id="data">
+                <button onclick="saveButton()">Save Data</button>
+                <button onclick="loadButton()">Load Data</button>
+                <input type="file" id="file-input" style="display:none"/>
+                <button onclick="clearButton()">Delete All Data</button>
+                <button onclick="deleteButton()">Delete Selected Archers</button>
+            </div>
+        </div>
+        <table id="archerList" border="1" cellspacing="0" cellpadding="3">
+            <thead>
+            <th id="target" colspan="2" class="sorter" onclick="match.sortby = 'target'" >Target</th>
+            <th id="name" class="sorter" onclick="match.sortby = 'name'">Name</th>
+            <th id="team" class="sorter" onclick="match.sortby = 'team'">Team</th>
+            <th>Bow</th>
+            <th>AGB Gender</th>
+            <th>Age</th>
+            <th>Class</th>
+            <th>H/C</th>
+            <th id="round" class="sorter" onclick="match.sortby = 'round'">Round</th>
+            <th>Hits</th>
+            <th>Score</th>
+            <th>Golds</th>
+            <th class="hide">Adjustment</th>
+            <th id="ps" class="hidemore sorter" onclick="match.sortby = 'ps'">Purescore</th>
+            <th class="hide">Allowance</th>
+            <th id="hs" class="hidemore sorter" onclick="match.sortby = 'hs'">Handicap Score</th>
+            <th>Delete</th>
+            <th style="display:none;">Legal Round</th>
+            </thead>
+            <tbody id="archers">
+            </tbody>
+        </table>
+        <div id="targetList" hidden></div>
+        <div id="scoresheets" hidden></div>
+        <div id="results" hidden></div>
+    </div>
+    <script>
+        // Variables that will probably change in future
+        const version = "8.0a";
+        const compatability = ["8.0a"];
+        const year = "2024";
+        const months = ["04","05","06","07","08","09"];
+        const clubs = ["Allington Castle Archers", "Bowmen of Darenteford", "Crown Archers", "Dover Castle Archers", "Fox Archers", "Gravesend Archers", "Medway Archers", "Swan Archers"];
+        const adjustmentArray = [101,-73,388,0]
+        const targetPosArray = ["A","B","C","D","E","F"];
+        // Variables that are not expected to change
+        const teamArray = ["Home","Away"];
+        const bowArray = ["Barebow","Compound","Longbow","Recurve"];
+        const genderArray = ["Men","Women"];
+        const ageArray = ["50+","Adult","U21","U18","U16","U15","U14","U12"];
+        const classArray = ["EMB","GMB","MB","B1","B2","B3","A1","A2","A3","UC"];
+        const classLongArray = ["Elite Master Bowman","Grand Master Bowman","Master Bowman","Bowman 1st Class","Bowman 2nd Class","Bowman 3rd Class","Archer 1st Class","Archer 2nd Class","Archer 3rd Class","Unclassified"];
+        const roundArray = ["St. George","Albion","Windsor","Windsor 50","Windsor 40","Windsor 30"];
+        const hcTable = new Map([
+            ["St. George",[474,475,477,479,481,483,485,487,490,493,496,500,504,508,512,516,521,526,531,537,543,549,555,562,569,576,584,592,600,608,617,626,636,645,655,666,677,688,699,711,723,736,749,762,775,789,803,818,832,847,862,878,893,909,925,941,956,972,988,1004,1020,1035,1051,1066,1081,1096,1111,1125,1139,1153,1166,1179,1192,1204,1216,1227,1238,1249,1259,1269,1278,1287,1296,1304,1312,1319,1326,1333,1339,1345,1351,1356,1361,1366,1370,1375,1379,1383,1386,1389,1393,1396,1398,1401,1403,1406,1408,1410,1412,1414,1415,1417,1418,1420,1421,1422,1423,1424,1425,1426,1427,1428,1429,1429,1430,1431,1431,1432,1432,1433,1433,1434,1434,1434,1435,1435,1435,1436,1436,1436,1436,1437,1437,1437,1437,1437,1437,1438,1438,1438,1438]],
+            ["Albion",[468,469,469,469,470,471,471,472,473,474,476,477,479,481,483,485,488,491,494,497,501,504,508,513,518,523,528,533,539,545,552,558,565,572,580,588,596,604,613,622,631,640,650,661,671,682,693,705,717,729,742,755,768,782,796,811,825,840,855,871,886,902,918,934,950,966,982,998,1014,1030,1046,1062,1077,1092,1107,1122,1136,1150,1164,1177,1190,1203,1215,1226,1237,1248,1259,1268,1278,1287,1296,1304,1312,1319,1326,1333,1339,1345,1351,1356,1361,1366,1371,1375,1379,1383,1386,1390,1393,1396,1399,1401,1404,1406,1408,1410,1412,1414,1416,1417,1419,1420,1421,1422,1424,1425,1426,1426,1427,1428,1429,1430,1430,1431,1431,1432,1432,1433,1433,1434,1434,1434,1435,1435,1435,1436,1436,1436,1436,1437,1437]],
+            ["Windsor",[468,468,468,468,468,468,468,468,468,468,468,469,469,469,470,471,472,473,474,475,477,479,481,483,486,488,491,495,498,502,506,511,516,521,526,531,537,543,550,556,563,570,578,585,593,601,610,619,628,638,647,658,668,679,690,702,714,726,739,752,766,779,794,808,823,838,853,869,885,901,917,934,950,967,983,999,1016,1032,1048,1064,1080,1095,1110,1125,1139,1154,1167,1181,1194,1206,1218,1230,1241,1251,1262,1272,1281,1290,1298,1307,1314,1322,1329,1335,1341,1347,1353,1358,1363,1368,1372,1377,1381,1384,1388,1391,1394,1397,1400,1402,1405,1407,1409,1411,1413,1415,1416,1418,1419,1420,1422,1423,1424,1425,1426,1427,1428,1428,1429,1430,1430,1431,1432,1432,1433,1433,1434,1434,1434,1435,1435]],
+            ["Windsor 50",[468,468,468,468,468,468,468,468,468,468,468,468,468,468,468,468,468,468,469,469,470,470,471,472,473,474,476,477,479,481,483,486,489,492,495,498,502,506,510,514,519,524,530,535,541,547,554,560,567,574,582,590,598,606,615,624,634,643,653,664,674,685,697,709,721,733,746,759,773,787,801,815,830,845,861,876,892,908,924,940,956,972,988,1004,1020,1036,1052,1067,1082,1097,1112,1127,1141,1155,1168,1181,1194,1206,1218,1230,1241,1251,1261,1271,1280,1289,1298,1306,1314,1321,1328,1334,1341,1347,1352,1358,1363,1367,1372,1376,1380,1384,1387,1390,1394,1396,1399,1402,1404,1406,1409,1411,1412,1414,1416,1417,1419,1420,1421,1423,1424,1425,1426,1427,1427,1428,1429,1430,1430,1431,1432]],
+            ["Windsor 40",[468,468,468,468,468,468,468,468,468,468,468,468,468,468,468,468,468,468,468,468,468,468,468,468,468,469,469,469,470,471,471,472,473,475,476,477,479,481,483,485,488,491,493,497,500,503,507,511,516,520,525,530,535,541,547,553,559,566,573,580,588,596,604,613,622,631,641,650,661,671,682,693,705,717,729,742,755,768,781,795,809,823,838,853,867,883,898,913,928,944,959,975,990,1005,1021,1036,1051,1066,1080,1095,1109,1123,1137,1150,1163,1176,1188,1201,1212,1223,1234,1245,1255,1265,1274,1283,1292,1300,1308,1315,1322,1329,1336,1342,1348,1353,1358,1363,1368,1372,1376,1380,1384,1387,1391,1394,1397,1399,1402,1404,1407,1409,1411,1413,1414,1416,1417,1419,1420,1421,1423]],
+            ["Windsor 30",[468,468,468,468,468,468,468,468,468,468,468,468,468,468,468,468,468,468,468,468,468,468,468,468,468,468,468,468,468,468,468,468,468,468,468,469,469,470,470,471,472,473,474,475,476,478,479,481,483,485,487,490,492,495,498,501,504,508,512,516,520,524,528,533,538,543,549,554,560,566,573,579,586,594,601,609,617,626,635,645,654,664,675,685,696,708,719,731,743,756,768,781,794,807,821,834,848,861,875,889,903,917,931,945,958,972,986,999,1013,1026,1039,1053,1066,1078,1091,1104,1116,1128,1140,1152,1163,1175,1186,1197,1207,1218,1228,1238,1247,1256,1265,1274,1282,1291,1298,1306,1313,1320,1326,1333,1339,1344,1350,1355,1360,1365,1369,1373,1377,1381,1385]],
+        ])
+        const distances = new Map([
+            ["St. George",[100,80,60]],
+            ["Albion",[80,60,50]],
+            ["Windsor",[60,50,40]],
+            ["Windsor 50",[50,40,30]],
+            ["Windsor 40",[40,30,20]],
+            ["Windsor 30",[30,20,10]],
+            ["",["  ","  ","  "]]
+        ])
+        // Initialise global variables for array archers and match settings.
+        var archers = new Array();
+        var match;
+        class Settings {
+            set home(value){
+                if (clubs.includes(value)){
+                    this._home = value;
+                    localStorage.setItem("home",this._home)
+                }
+            }
+            get home(){
+                return this._home;
+            }
+            set away(value){
+                if (clubs.includes(value)){
+                    this._away = value;
+                    localStorage.setItem("away",this._away)
+                }
+            }
+            get away(){
+                return this._away;
+            }
+            set date(value){
+                if (value && value.substring(0,4) == year && months.includes(value.substring(5,7))){
+                    this._date = value;
+                    localStorage.setItem("date",this._date)
+                }
+            }
+            get date(){
+                return this._date;
+            }
+            set sortby(value){
+                let sortOptions = ["name","target","hs","ps","round","team"]
+                if (sortOptions.includes(value)){
+                    this._sortby = value
+                    localStorage.setItem("sortby",this._sortby)
+                    window.location.reload();
+                }
+            }
+            get sortby(){
+                return this._sortby;
+            }
+            addSettingHtml(){
+                let homeClubOptions, awayClubOptions, settinghtml; 
+                for (let club in clubs) {
+                    homeClubOptions += `<option value="${clubs[club]}"`
+                    match.home == clubs[club] ? homeClubOptions += ` selected` : "";
+                    homeClubOptions += `>${clubs[club]}</option>`;
+                    awayClubOptions += `<option value="${clubs[club]}"`
+                    match.away == clubs[club] ? awayClubOptions += ` selected` : "";
+                    awayClubOptions += `>${clubs[club]}</option>`;
+                }
+                settinghtml = `<div class="home"><label for="home">Home Team: </label>
+                <select id="home" onchange="match.home = this.value;">
+                    ${match.home == "" ? "<option selected disabled value>Please Select...</option>" : ""}
+                    ${homeClubOptions}</select></div>
+                <div class="away"><label for="away">Away Team: </label>
+                <select id="away" onchange="match.away = this.value;">
+                    <option disabled>Please Select...</option>
+                    ${match.away == "" ? "<option selected disabled value>Please Select...</option>" : ""}
+                    ${awayClubOptions}</select></div>
+                <div class="date"><label for="date">Date: </label>
+                <input id="date" type="date" onchange="match.date = this.value;" value="${match.date}"></div>
+                <input id="verson" type="hidden" value="${match.version}">`;
+                document.getElementById("settings").innerHTML = settinghtml;
+            }
+            saveSettings(){
+                localStorage.setItem("home",this._home);
+                localStorage.setItem("away",this._away);
+                localStorage.setItem("date",this._date);
+                localStorage.setItem("sortby",this._sortby);
+                localStorage.setItem("version",this.version);
+            }
+            constructor (obj) {
+                this._home = obj.home ? obj.home : "";
+                this._away = obj.away ? obj.away : "";
+                this._date = obj.date ? obj.date : "";
+                this._sortby = obj.sortby ? obj.sortby : "";
+                this.version = obj.version ? obj.version : version;
+                Object.assign(obj, this);
+                this.saveSettings();
+            }
+        }
+        class Archer {   
+            set targetNo(value){
+                value = parseInt(value);
+                if (value >= 1 && value <= 20) {
+                    this._targetNo = value;
+                    checkTargets();
+                    this.saveData();
+                } else {
+                    window.location.reload();
+                }
+            }
+            get targetNo(){
+                return this._targetNo;
+            }
+            set targetPos(value){
+                if (targetPosArray.includes(value)) {
+                    this._targetPos = value;
+                    checkTargets();
+                    this.saveData();
+                } else {
+                    window.location.reload();
+                }
+            }
+            get targetPos(){
+                return this._targetPos;
+            }
+            set targetValid(value){
+                if(value == 0 || value == 1) {
+                    this._targetValid = value;
+                    this.saveData();
+                }
+            }
+            get targetValid(){
+                return this._targetValid;
+            }
+            set name(value){
+                if (value?.match(/^[A-Za-z\s\-]*$/)) {
+                    this._name = value;
+                    this.saveData();
+                } else {
+                    window.location.reload();
+                }
+            }
+            get name(){
+                return this._name;
+            }
+            set team(value){
+                if (teamArray.includes(value)) {
+                    this._team = value;
+                    this.saveData();
+                    this.updateFormatting();
+                } else {
+                    window.location.reload();
+                }
+            }
+            get team(){
+                return this._team;
+            }
+            set bow(value){
+                if (bowArray.includes(value)) {
+                    this._bow = value;
+                    this.updateValues();
+                    this.saveData();
+                } else {
+                    window.location.reload();
+                }
+            }
+            get bow(){
+                return this._bow;
+            }
+            set gender(value){
+                if (genderArray.includes(value)) {
+                    this._gender = value;
+                    this.updateValues();
+                    this.saveData();
+                } else {
+                    window.location.reload();
+                }
+            }
+            get gender(){
+                return this._gender;
+            }
+            set age(value){
+                if (ageArray.includes(value)) {
+                    this._age = value;
+                    this.updateValues();
+                    this.saveData();
+                } else {
+                    window.location.reload();
+                }
+            }
+            get age(){
+                return this._age;
+            }
+            set classification(value){
+                if (classArray.includes(value)) {
+                    this._classification = value;
+                    this.updateValues();
+                    this.saveData();
+                } else {
+                    window.location.reload();
+                }
+            }
+            get classification(){
+                return this._classification;
+            }
+            set hc(value){
+                value = parseInt(value);
+                if ((value <= 150 && value >= 0) || value == "") {
+                    this._hc = value;
+                    this.updateValues();
+                    this.saveData();
+                } else {
+                    window.location.reload();
+                }
+            }
+            get hc(){
+                return this._hc;
+            }
+            set round(value){
+                if (roundArray.includes(value)) {
+                    this._round = value;
+                    this.updateValues();
+                    checkTargets();
+                    this.saveData();
+                } else {
+                    window.location.reload();
+                }
+            }
+            get round(){
+                return this._round;
+            }
+            set hits(value){
+                value = parseInt(value);
+                if (value <= 108 && value >= 0) {
+                    this._hits = value;
+                    this.updateValues();
+                    this.saveData();
+                } else {
+                    window.location.reload();
+                }
+            }
+            get hits(){
+                return this._hits;
+            }
+            set score(value){
+                value = parseInt(value);
+                if (value <= 972 && value >= 0) {
+                    this._score = value;
+                    this.updateValues();
+                    this.saveData();
+                } else {
+                    window.location.reload();
+                }
+            }
+            get score(){
+                return this._score;
+            }
+            set golds(value){
+                value = parseInt(value);
+                if (value <= 108 && value >= 0) {
+                    this._golds = value;
+                    this.updateValues();
+                    this.saveData();
+                } else {
+                    window.location.reload();
+                }
+            }
+            get golds(){
+                return this._golds;
+            }
+            get adjustment(){
+                this._adjustment = adjustmentArray[bowArray.indexOf(this._bow)];
+                this.saveData();
+                return this._adjustment;
+            }
+            get purescore() {
+                if (isNaN(this.score) || isNaN(this.adjustment)){
+                    return "";
+                } else {
+                    this._purescore = this.score + this.adjustment;
+                    this.saveData();
+                    return this._purescore;
+                }
+            }
+            get allowance() {
+                let hc = this._hc;
+                if (hc == "") {
+                    hc = 0;
+                }
+                this._allowance = hcTable.get(this._round)[hc];
+                this.saveData();
+                return this._allowance;
+            }
+            get handicap() {
+                if (isNaN(this.score) || isNaN(this.allowance)){
+                    return "";
+                } else {
+                    this._handicap = this.score + this.allowance;
+                    this.saveData();
+                    return this._handicap;
+                }
+            }
+            get legal(){
+                let roundNo = roundArray.indexOf(this.round);
+                let requiredRound = 5; 
+                
+                switch(this.age) {
+                    case "U14":
+                        requiredRound = 4;
+                        break;
+                    case "U15":
+                    case "U16":
+                        requiredRound = 3;
+                        break;
+                    case "U18":
+                        requiredRound = 2;
+                        break;
+                    case "U21":
+                    case "Adult":
+                        switch (this.bow) {
+                            case "Barebow":
+                            case "Longbow":
+                                requiredRound = this.gender == "Men" ? 1 : 2;
+                                break;
+                            case "Compound":
+                                requiredRound = this.gender == "Men" ? 0 : 1;
+                                break;
+                            case "Recurve":
+                                switch (this.classification) {
+                                    case "EMB":
+                                    case "GMB":
+                                    case "MB":
+                                    case "B1":
+                                    case "B2":
+                                        requiredRound = this.gender == "Men" ? 0 : 1;
+                                        break;
+                                    case "B3":
+                                        requiredRound = 1;
+                                        break;
+                                    case "A1":
+                                        requiredRound = 2;
+                                        break;
+                                    case "A2":
+                                        requiredRound = 3;
+                                        break;
+                                    case "A3": 
+                                        requiredRound = 4;
+                                        break;
+                                }
+                                break;
+                        }
+                        break;
+                    case "50+":
+                        switch (this.bow) {
+                            case "Barebow":
+                            case "Longbow":
+                                requiredRound = this.gender == "Men" ? 2 : 3;
+                                break;
+                            case "Compound":
+                                requiredRound = this.gender == "Men" ? 1 : 2;
+                                break;
+                            case "Recurve":
+                                switch (this.classification) {
+                                    case "EMB":
+                                    case "GMB":
+                                    case "MB":
+                                    case "B1":
+                                    case "B2":
+                                        requiredRound = this.gender == "Men" ? 1 : 2;
+                                        break;
+                                    case "B3":
+                                        requiredRound = 2;
+                                        break;
+                                    case "A1":
+                                        requiredRound = 3;
+                                        break;
+                                    case "A2":
+                                        requiredRound = 4;
+                                        break;
+                                }
+                                break;
+                        }
+                        break;
+                }
+                this._legal = roundNo <= requiredRound;
+                this.saveData();
+                return this._legal;
+            }
+            set index(value){
+                value = parseInt(value);
+                if(value >= 0){
+                    this._index = value;
+                }
+                this.saveData();
+            }
+            get index(){
+                return this._index;
+            }
+            set toDelete(value){
+                if (typeof value == "boolean") {
+                    this._toDelete = value;
+                    this.saveData();
+                }
+            }
+            get toDelete(){
+                return this._toDelete;
+            }
+            addHtml() {
+                this.targetValid = 1;
+                let archerhtml = `<tr id="archer${this.index}">
+                    <td><input id="targetNo${this.index}" type="number" min="1" max="20" value="${this.targetNo}" onchange="archers[${this.index}].targetNo = this.value;"></td>
+                    <td><select id="targetPos${this.index}" onchange="archers[${this.index}].targetPos = this.value;">`;
+                targetPosArray.forEach(element => {
+                    archerhtml += `<option value="${element}"`;
+                    element == this.targetPos ? archerhtml += ` selected` : "";
+                    archerhtml += `>${element}</option>`;
+                })                
+                archerhtml += `</select></td>
+                    <td><input id="name${this.index}" type="text" value="${this.name}" onchange="archers[${this.index}].name = this.value;"></td>
+                    <td><select id="team${this.index}" onchange="archers[${this.index}].team = this.value;">`;
+                teamArray.forEach(element => {
+                    archerhtml += `<option value="${element}"`;
+                    element == this.team ? archerhtml += ` selected` : "";
+                    archerhtml += `>${element}</option>`;
+                })
+                archerhtml += `</select></td><td><select id="bow${this.index}" value="${this.targetNo}" onchange="archers[${this.index}].bow = this.value;">`;
+                bowArray.forEach(element => {
+                    archerhtml += `<option value="${element}"`;
+                    element == this.bow ? archerhtml += ` selected` : "";
+                    archerhtml += `>${element}</option>`;
+                })
+                archerhtml += `</select></td><td><select id="gender${this.index}" value="${this.gender}" onchange="archers[${this.index}].gender = this.value;">`;
+                genderArray.forEach(element => {
+                    archerhtml += `<option value="${element}"`;
+                    element == this.gender ? archerhtml += ` selected` : "";
+                    archerhtml += `>${element}</option>`;
+                })
+                archerhtml += `</select></td><td><select id="age${this.index}" value="${this.age}" onchange="archers[${this.index}].age = this.value;">`;
+                ageArray.forEach(element => {
+                    archerhtml += `<option value="${element}"`;
+                    element == this.age ? archerhtml += ` selected` : "";
+                    archerhtml += `>${element}</option>`;
+                })
+                archerhtml += `</select></td><td><select id="classification${this.index}" onchange="archers[${this.index}].classification = this.value;">`;
+                classArray.forEach(element => {
+                    archerhtml += `<option value="${element}"`;
+                    element == this.classification ? archerhtml += ` selected` : "";
+                    archerhtml += `>${element}</option>`;
+                })
+                archerhtml += `</select></td>
+                    <td><input id="hc${this.index}" type="number" min="0" max="150" value="${this.hc}" onchange="archers[${this.index}].hc = this.value;"></td>
+                    <td><select id="round${this.index}" value="${this.round}" onchange="archers[${this.index}].round = this.value;">`;
+                roundArray.forEach(element => {
+                    archerhtml += `<option value="${element}"`;
+                    element == this.round ? archerhtml += ` selected` : "";
+                    archerhtml += `>${element}</option>`;
+                })
+                archerhtml += `</select></td>
+                    <td><input id="hits${this.index}" type="number" min="0" max="108" value="${this.hits}" onchange="archers[${this.index}].hits = this.value;"></td>
+                    <td><input id="score${this.index}" type="number" min="0" max="972" value="${this.score}" onchange="archers[${this.index}].score = this.value;"></td>
+                    <td><input id="golds${this.index}" type="number" min="0" max="108" value="${this.golds}" onchange="archers[${this.index}].golds = this.value;"></td>
+                    <td class="hide"><span id="adjustment${this.index}">${this.adjustment}</span></td>
+                    <td class="hidemore"><span id="purescore${this.index}">${this.purescore}</span></td>
+                    <td class="hide"><span id="allowance${this.index}">${this.allowance}</span></td>
+                    <td class="hidemore"><span id="handicap${this.index}">${this.handicap}</span></td>
+                    <td><input type="checkbox"${this.toDelete ? " checked" : ""} onchange="archers[${this.index}].toDelete = this.checked" /></td>
+                    <td style="display:none;"><span id="legal${this.index}">${this.legal}</span></td></tr>`;
+                document.getElementById('archers').innerHTML += archerhtml;
+                this.updateValues();
+            }
+            checkErrors() { 
+                this.errors = [];
+                if (this._hits < this._golds) {
+                    this.errors.push(1);
+                    console.log("Error: hits too low");
+                    
+                } 
+                if (this._score < ((this._hits - this._golds) + (this._golds * 9))) {
+                    this.errors.push(2);
+                    console.log("Error: score too low");
+                }
+                if (this._score > (((this._hits - this._golds) * 7) + (this._golds * 9))) {
+                    this.errors.push(3); 
+                    console.log("Errors: score too high");
+                }
+                if (this._score % 2 != this._hits % 2) {
+                    this.errors.push(4); 
+                    console.log("Errors: evens/odds");
+                }
+                this.saveData();
+            }
+            updateValues(){
+                if(!document.getElementById(`archer${this.index}`)){return;}
+                document.getElementById(`adjustment${this.index}`).innerHTML = this.adjustment;
+                document.getElementById(`allowance${this.index}`).innerHTML = this.allowance;
+                document.getElementById(`legal${this.index}`).innerHTML = this.legal;
+                document.getElementById(`purescore${this.index}`).innerHTML = this.purescore;
+                document.getElementById(`handicap${this.index}`).innerHTML = this.handicap;
+                this.updateFormatting();
+            }
+            updateFormatting(){
+                if(!document.getElementById(`archer${this.index}`)){return;}
+                this.checkErrors();
+                document.getElementById(`archer${this.index}`).classList = "";
+                document.getElementById(`archer${this.index}`).classList.add(`${this.team.toLowerCase()}`);
+                if(!this.legal){
+                    document.getElementById(`archer${this.index}`).classList.add("illegal");
+                }
+                if(this.errors.length == 0){
+                    document.getElementById(`hits${this.index}`).classList = "";
+                } else {
+                    document.getElementById(`hits${this._index}`).classList.add("error");
+                }
+                 if(this.errors.length == 0 || this.errors[0] == 1){
+                    document.getElementById(`score${this.index}`).classList = "";
+                } else {
+                    document.getElementById(`score${this._index}`).classList.add("error");
+                }
+                if(this.errors.length == 0 || this.errors[0] == 4){
+                    document.getElementById(`golds${this.index}`).classList = "";
+                } else {
+                    document.getElementById(`golds${this._index}`).classList.add("error");
+                }
+                if(this.targetValid == 1){
+                    document.getElementById(`targetNo${this._index}`).classList = "";
+                    document.getElementById(`targetPos${this._index}`).classList = "";
+                } else {
+                    document.getElementById(`targetNo${this._index}`).classList.add("error");
+                    document.getElementById(`targetPos${this._index}`).classList.add("error");
+                }
+            }
+            saveData() {
+                localStorage.setItem(this.id, JSON.stringify(this))
+            }
+            delete() {
+                let index = parseInt(this.id.substring(6));
+                if (confirm(`Are you sure you want to delete archer: ${this.name}, on row: ${this.index + 1}`) == true){
+                    localStorage.removeItem(this.id);
+                }
+            }
+            constructor (obj) {
+                this.id = "id" + Math.random().toString(26).slice(2);
+                this._index = "";
+                this._targetNo = 1;
+                this._targetPos = "A";
+                this._targetValid = 0;
+                this._name = "";
+                this._team = "Home";
+                this._bow = "Recurve";
+                this._gender = "Men";
+                this._age = "50+";
+                this._classification = "UC";
+                this._hc = "";
+                this._round = "Windsor 30";
+                this._hits = 0;
+                this._score = 0;
+                this._golds = 0;
+                this._adjustment = 0;
+                this._purescore = 0;
+                this._allowance = 0;
+                this._handicap = 0;
+                this._legal = false;
+                this._toDelete = false;
+                this.errors = [];
+                Object.assign(this, obj);
+                this.saveData();
+            }
+        }
+        function markClash(target) {
+            let targetNo = target.substring(0, target.length -1);
+            let targetPos = target.substring(target.length -1);
+            let spaceClash = archers.map(archer => { 
+                if(archer.targetNo == targetNo && archer.targetPos == targetPos) {
+                    return archer;
+                }
+            }).filter(Boolean);
+            spaceClash.map(archer => {
+                archer.targetValid = spaceClash.length > 1 ? 0 : 1;
+                archer.updateFormatting();
+            })
+            let firstArcher;
+            let roundClash = archers.map(archer => {
+                if(archer.targetNo == targetNo){
+                    if(!firstArcher){
+                        firstArcher = archer;
+                    } else if (archer.round != firstArcher.round) {
+                        return archer;
+                    }
+                } 
+            }).filter(Boolean);
+            if(roundClash.length > 0){
+                archers.map(archer => {
+                    if(archer.targetNo == targetNo){
+                        archer.targetValid = 0;
+                        archer.updateFormatting();
+                    }
+                })
+            }
+            
+        }
+        function checkTargets(){
+            const pairs = ["A","C","E"];
+            let targetList = [...new Set(archers.map((archer) => archer.targetNo + archer.targetPos))];
+            const emptyTargets = targetList.map(target => {
+                const targetNo = target.substring(0, target.length -1);
+                const targetPos = target.substring(target.length -1);
+                const direction = pairs.includes(targetPos) ? 1 : -1;
+                const next = targetPosArray[targetPosArray.indexOf(targetPos) + direction]; 
+                if (!targetList.includes(targetNo + next)){
+                    return targetNo + next; 
+                } else {
+                    return false;
+                }
+            }).filter(Boolean);
+            targetList = targetList.concat(emptyTargets).sort(sorterPos);
+            const targets = targetList.map(target => {
+                const targetNo = target.substring(0, target.length -1);
+                const targetPos = target.substring(target.length -1);
+                if (emptyTargets.includes(target)) {return [[targetPos,"","","","","","","","","",""]];}
+                markClash(target);
+                return archers.map(archer => {
+                    if (archer.targetNo == targetNo && archer.targetPos == targetPos){
+                        return [archer.targetPos, archer.name, archer.team, archer.bow, archer.round, archer.hc, archer.classification, archer.age, archer.gender, archer.targetValid, archer.index];
+                    }
+                }).filter(Boolean);
+            })
+            const title = `<h2>Kent Archery League</h2><h4>${match.home} v ${match.away}</h4>`;
+            const date = match.date.substring(8) + "/" + match.date.substring(5,7) + "/" + match.date.substring(0,4);
+            let targethtml = title + `<h4>${date}</h4>
+                <table id="targetList" border="1" cellspacing="0" cellpadding="5">
+                <thead>
+                    <th>Target</th>
+                    <th>Name</th>
+                    <th>Team</th>
+                    <th>Bow</th>
+                    <th>Round</th>
+                    </thead>
+                <tbody id="targets">`;
+            let scoresheethtml = title;
+            targets.map((target, index) => {
+                target.map(row => {
+                    if (row[1] != "") {
+                        targethtml += `<tr${row[9] == 0 ? ` class="error"` : ""}><td>${targetList[index]}</td><td>${row[1]}</td><td>${row[2]}</td><td>${row[3]}</td><td>${row[4]}</td></tr>`;
+                    }
+                    const club = row[2] == "Home" ? match.home : row[2] == "Away" ? match.away : "";
+                    const classification = row[6] == "" ? "" : classLongArray[classArray.indexOf(row[6])];
+                    scoresheethtml += `<div>
+                        <table class="scoresheetHead" border="1" cellspacing="0" cellpadding="5">
+                            <tr><th>Name:</th><td>${row[1]}</td>
+                                <th>Bow:</th><td>${row[3]}</td>
+                                <th>Round:</th><td>${row[4]}</td></tr>
+                            <tr><th>Club:</th><td>${club}</td>
+                                <th>Handicap:</th><td>${row[5]}</td>
+                                <th>Group:</th><td>${row[7]} ${row[8]}</td></tr>
+                            <tr><th>Class:</th><td>${classification}</td>
+                                <th>Target:</th><td>${row[9] == "" ? "" : targetList[index] }</td>
+                                <th>Date:</th><td>${date}</td></tr>
+                        </table>
+                        <table class="scoresheetBody" border="1" cellspacing="0" cellpadding="5">
+                            <thead>${'<th colspan="6"></th><th>E/T</th>'.repeat(2)}<th>H</th><th>S</th><th>G</th><th>R/T</th></thead>
+                            <tbody>`;
+                    let i = 0;
+                    const arrowRows = "<tr>" + "<td>&nbsp</td>".repeat(18) + "</tr>";
+                    const distance = distances.get(row[4])
+                    while (i < 3) {
+                        scoresheethtml += arrowRows.repeat(3);
+                        scoresheethtml += `<tr><td class="distTotals" colspan="14">Totals for ${distance[i]} yds:</td><td></td><td></td><td></td><td ${i == 2 ? 'rowspan="2"' : ""} class="distTotals"></td></tr>`;
+                        i ++;
+                    }
+                    scoresheethtml += `<tr><td class="distTotals" colspan="14">Grand Totals:</td>
+                                    <td></td><td></td><td></td></tr></tbody></table>
+                        <div class="sign"><div><span>Archer's Signature</span></div><div><span>Target Captain's Signature</span></div></div>
+                    </div>`;
+                    index % 2 != 0 ? scoresheethtml += "<div class='pagebreak'> </div>" + title : "";
+                })
+            })
+            targethtml += `</tbody></table>`;
+            document.getElementById("targetList").innerHTML = targethtml;
+            document.getElementById("scoresheets").innerHTML = scoresheethtml;    
+        }
+        // Sorter Functions
+        function sorterName(a, b){
+            if(a.name < b.name) return -1;
+            if(a.name > b.name) return 1;
+            return 0;
+        }
+        function sorterPS(a, b){
+            const aS = parseInt(a.purescore);
+            const aG = parseInt(a.golds);
+            const aH = parseInt(a.hits);
+            const aHC = a.hc == "" ? 0 : parseInt(a.hc);
+            const bS = parseInt(b.purescore);
+            const bG = parseInt(b.golds);
+            const bH = parseInt(b.hits);
+            const bHC = a.hc == "" ? 0 : parseInt(a.hc);
+            if(aS > bS) return -1;
+            if(aS < bS) return 1;
+            if(aG > bG) return -1;
+            if(aG < bG) return 1;
+            if(aH > bH) return -1;
+            if(aH < bH) return 1;
+            if(aHC > bHC) return -1;
+            if(aHC < bHC) return 1;
+            return 0;
+        }
+        function sorterHS(a, b){
+            const aS = parseInt(a.handicap);
+            const aG = parseInt(a.golds);
+            const aH = parseInt(a.hits);
+            const aHC = a.hc == "" ? 0 : parseInt(a.hc);
+            const bS = parseInt(b.handicap);
+            const bG = parseInt(b.golds);
+            const bH = parseInt(b.hits);
+            const bHC = a.hc == "" ? 0 : parseInt(a.hc);
+            if(aS > bS) return -1;
+            if(aS < bS) return 1;
+            if(aG > bG) return -1;
+            if(aG < bG) return 1;
+            if(aH > bH) return -1;
+            if(aH < bH) return 1;
+            if(aHC > bHC) return -1;
+            if(aHC < bHC) return 1;
+            return 0;
+        }
+        function sorterRound(a, b){
+            const aRound = roundArray.indexOf(a.round);
+            const bRound = roundArray.indexOf(b.round);
+            if(aRound < bRound) return -1;
+            if(aRound > bRound) return 1;
+
+            return sorterPos(a, b);
+        }
+        function sorterTeam(a, b){
+            const aTeam = teamArray.indexOf(a.team);
+            const bTeam = teamArray.indexOf(b.team);
+            if(aTeam > bTeam) return -1;
+            if(aTeam < bTeam) return 1;
+            return sorterPos(a, b);
+        }
+        function sorterPos(a, b) {
+            let targetA = a.targetNo;
+            let targetB = b.targetNo
+            let targetDiff = sorter(targetA, targetB)
+            if (targetDiff == 0) {
+                let posA = targetPosArray.indexOf(a.targetPos);
+                let posB = targetPosArray.indexOf(b.targetPos);
+                if (posA < posB) {return -1;}
+                if (posA > posB) {return 1;}
+                return sorterName(a, b);
+            } else {
+                return targetDiff;
+            }
+        }
+        function sorter(a, b) {
+            if (a < b) return -1;
+            if (a > b) return 1;
+            return 0;
+        }
+        function sorterArcher(a, b){
+            match.sortby != "" ? document.getElementById(match.sortby).classList.add("draw") : "";
+            if(match.sortby == "name"){
+                return(sorterName(a, b))
+            } else if(match.sortby == "ps"){
+                return(sorterPS(a, b));
+            } else if(match.sortby == "hs"){
+                return(sorterHS(a, b));
+            } else if(match.sortby == "round"){
+                return(sorterRound(a, b));
+            } else if(match.sortby == "team"){
+                return(sorterTeam(a, b));
+            } else {
+                return sorterPos(a, b)
+            }
+        }
+        // Get the current state from localStorage on pageload
+        function readData() {
+            if (compatability.includes(localStorage.getItem("version"))){
+                let home = localStorage.getItem("home");
+                let away = localStorage.getItem("away");
+                let date = localStorage.getItem("date");
+                let sortby = localStorage.getItem("sortby");
+                let dataVersion = localStorage.getItem("version");
+                match = new Settings({home, away, date, sortby, dataVersion});
+                match.addSettingHtml();
+                let versionText;
+                if (dataVersion == version) {
+                    versionText = "v" + version;
+                } else {
+                    versionText = "v" + version + " (using data loaded from v" + dataVersion +")";
+                }
+                document.getElementById("version").innerHTML = versionText;
+                let keys = Object.keys(localStorage)
+                if (keys.length > 0) {
+                    archers = [];
+                    let i = 0;
+                    while (i < keys.length) {
+                        if (keys[i].substring(0,2) == "id"){
+                            archers.push(new Archer({...JSON.parse(localStorage.getItem(keys[i]))}));
+                        }
+                        i ++;
+                    }
+                    archers.sort(sorterArcher);
+                    archers.map(archer => {
+                        let index = archers.indexOf(archer);
+                        archer.index = index;
+                        archer.addHtml();
+                    })
+                    checkTargets();
+                }
+            } else if (!localStorage.getItem("version")) {
+                localStorage.setItem("version",version);
+                window.location.reload();
+            } else {
+                let errorMsg = '<h1 class ="error">There was an error, please save your data and send it to info@kentarcheryleague.co.uk</h1>';
+                let saveButton = '<button onclick="saveButton()">Save</button>';
+                document.body.innerHTML = errorMsg + saveButton;
+            }
+            if (archers.length > 0) {
+                document.getElementById("howto").hidden = true;
+            } else {
+                document.getElementById("archers").innerHTML = "<tr><td colspan='18'>No archers yet, please add or import some.</td></tr>";
+            }
+        }
+        // Functions for buttons
+        function addArcher(){
+            let noOfArchers = document.getElementById("noOfArchers").value;
+            let newArcherTeam = document.getElementById("newArcherTeam").value;
+            if (!noOfArchers || noOfArchers < 1 || noOfArchers > 100){noOfArchers = 1;}
+            if (newArcherTeam != "Away"){newArcherTeam = "Home";}
+            i = 0;
+            while (i < noOfArchers) {
+                archers.push(new Archer({team: newArcherTeam}));
+                i ++;
+            }
+            window.location.reload()
+        }
+        function saveButton(){
+            let csvContent = "data:text/csv;charset=utf-8,SETTINGS\r\nhome, away, date, sortby, version\r\n";
+            csvContent += match.home + "," + match.away + "," + match.date + "," + match.sortby + "," + match.version + "\r\n";
+            csvContent += "ARCHERS\r\ntargetNo, targetPos, name, team, bow, gender, age, classification, hc, round, hits, score, golds, adjustment, purescore, allowance, handicap\r\n"
+            const exportArchers = [];
+            archers.map(archer =>{
+                const row = ['targetNo', 'targetPos', 'name', 'team', 'bow', 'gender', 'age', 'classification', 'hc', 'round', 'hits', 'score', 'golds', 'adjustment', 'purescore', 'allowance', 'handicap'].map(i => archer[i]);
+                exportArchers.push(row.join(","));
+            })
+            csvContent += exportArchers.join("\r\n")
+            var encodedUri = encodeURI(csvContent);
+            var link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            const homeTeam = match.home.split(" ").map((n)=>n[0]).join("");
+            const awayTeam = match.away.split(" ").map((n)=>n[0]).join("");
+            link.setAttribute("download", homeTeam + "-" + awayTeam + "-" + match.date + ".csv");
+            document.body.appendChild(link); // Required for FF
+            link.click();
+        }         
+        function targetList() {
+            hideMain();
+            document.getElementById("targetList").hidden = false;
+            document.getElementById("orientation").innerHTML = "@page { size: portrait; }"
+            window.print();
+        }
+        function scoresheets() {
+            hideMain();
+            document.getElementById("scoresheets").hidden = false;
+            document.getElementById("orientation").innerHTML = "@page { size: portrait; }"
+            window.print();
+        }
+        function results() {
+            function calculateTeam(team, handicap){
+                let count = 0;
+                let compounds = 0;
+                let juniors = 0;
+                let total = 0;
+                const result = team.map(archer => {
+                    if (count < 4) {
+                        if (!archer.legal) {return false;}
+                        if (archer.bow == "Compound" && compounds == 2) {return false;}
+                        if (archer.age.substring(0,1) == "U" && juniors == 2) {return false;}
+                        archer.bow == "Compound" ? compounds ++ : "";
+                        archer.age.substring(0,1) == "U" ? juniors ++ : "";
+                        if (handicap == true) {
+                            total += archer.handicap;
+                            count ++;
+                            return [archer.name,archer.handicap];
+                        } else {
+                            total += archer.purescore;
+                            count ++;
+                            return [archer.name,archer.purescore];
+                        }
+                    } else {return false;}
+                }).filter(Boolean);
+                result.splice(4);
+                result.push(["Total",total],["Compounds",compounds],["Juniors",juniors])
+                return result;
+            }
+            const date = match.date.substring(8) + "/" + match.date.substring(5,7) + "/" + match.date.substring(0,4);
+            const title = `<h2>Kent Archery League</h2><h4>${match.home} v ${match.away}</h4><h4>${date}</h4>`;
+            const results = new Map;
+            const homeArchers = archers.filter((archer) => {return archer.team == "Home"});
+            const awayArchers = archers.filter((archer) => {return archer.team == "Away"});
+            const homeArchersPS = homeArchers.sort(sorterPS);
+            const awayArchersPS = awayArchers.sort(sorterPS);
+            results.set("homePureScore",calculateTeam(homeArchersPS,false));
+            results.set("awayPureScore",calculateTeam(awayArchersPS,false));
+            const homeArchersHS = homeArchers.sort(sorterHS);
+            const awayArchersHS = awayArchers.sort(sorterHS);
+            results.set("homeHCScore",calculateTeam(homeArchersHS,true));
+            results.set("awayHCScore",calculateTeam(awayArchersHS,true));
+            const blank = '<td class="blank">&nbsp;</td>'
+            let resulthtml = "<div>" + title + `</div><table border="1" cellspacing="0" cellpadding="8">
+                <thead>
+                    <tr>
+                        <th colspan="5" class="home">Purescore Teams</th>
+                        ${blank}
+                        <th colspan="5" class="home">Handicap Teams</th></tr>
+                    <tr>
+                        <th colspan="2" class="home">${match.home}</th>
+                        ${blank}
+                        <th colspan="2" class="away">${match.away}</th>
+                        ${blank}
+                        <th colspan="2" class="home">${match.home}</th>
+                        ${blank}
+                        <th colspan="2" class="away">${match.away}</th>
+                    </tr>
+                    <tr>`;
+            resulthtml += ("<th>Name</th><th>Score</th>" + blank).repeat(3);
+            resulthtml += "<th>Name</th><th>Score</th></tr></thead><tbody>";
+            let i = 0;
+            while (i < 7){
+                resulthtml += `<tr>
+                        <${i >= 4 ? "th" : "td"}${i == 4 ? " class='home'" : ""}>${results.get("homePureScore")[i][0]}</td>
+                        <td>${i == 4 ? "<b>" : ""}${results.get("homePureScore")[i][1]}${i == 4 ? "<b>" : ""}</td>
+                        ${blank}
+                        <${i >= 4 ? "th" : "td"}${i == 4 ? " class='away'" : ""}>${results.get("awayPureScore")[i][0]}</td>
+                        <td>${i == 4 ? "<b>" : ""}${results.get("awayPureScore")[i][1]}${i == 4 ? "<b>" : ""}</td>
+                        ${blank}
+                        <${i >= 4 ? "th" : "td"}${i == 4 ? " class='home'" : ""}>${results.get("homeHCScore")[i][0]}</td>
+                        <td>${i == 4 ? "<b>" : ""}${results.get("homeHCScore")[i][1]}${i == 4 ? "<b>" : ""}</td>
+                        ${blank}
+                        <${i >= 4 ? "th" : "td"}${i == 4 ? " class='away'" : ""}>${results.get("awayHCScore")[i][0]}</td>
+                        <td>${i == 4 ? "<b>" : ""}${results.get("awayHCScore")[i][1]}${i == 4 ? "<b>" : ""}</td>
+                    </tr>`;
+                i ++;
+            }
+            resulthtml += "<tfoot><tr><td colspan='5' id='psWinner'>";
+            const homePSTotal = parseInt(results.get("homePureScore")[4][1]);
+            const awayPSTotal = parseInt(results.get("awayPureScore")[4][1]);
+            const homeHCTotal = parseInt(results.get("homeHCScore")[4][1]);
+            const awayHCTotal = parseInt(results.get("awayHCScore")[4][1]);
+            let psWinner;
+            let hsWinner;
+            if (homePSTotal > awayPSTotal){
+                psWinner = "home";
+                resulthtml += match.home + " win by " + (homePSTotal - awayPSTotal) + " points";
+            } else if (homePSTotal < awayPSTotal){
+                psWinner = "away";
+                resulthtml += match.away + " win by " + (awayPSTotal - homePSTotal) + " points";
+            } else {
+                psWinner = "draw";
+                resulthtml += "Both teams drew with " + homePSTotal + " points";
+            }
+            resulthtml += blank + "<td colspan='5' id='hsWinner'>";
+            if (homeHCTotal > awayHCTotal){
+                hsWinner = "home";
+                resulthtml += match.home + " win by " + (homeHCTotal - awayHCTotal) + " points";
+            } else if (homeHCTotal < awayHCTotal){
+                hsWinner = "away";
+                resulthtml += match.away + " win by " + (awayHCTotal - homeHCTotal) + " points";
+            } else {
+                hsWinner = "draw";
+                resulthtml += "Both teams drew with " + awayPSTotal + " points";
+            }
+            resulthtml += "</tfoot></table>";
+            document.getElementById("results").innerHTML = resulthtml;
+            document.getElementById("psWinner").classList.add(psWinner);
+            document.getElementById("hsWinner").classList.add(hsWinner);
+            hideMain();
+            document.getElementById("results").hidden = false;
+            document.getElementById("orientation").innerHTML = "@page { size: landscape; }"
+            window.print();
+        }
+        function loadButton(){
+            if (archers.length > 0) {
+                if (confirm("Loading a file will overwrite all data, do you want to continue?") == true){
+                    document.getElementById('file-input').click()
+                }
+            } else {
+                document.getElementById('file-input').click()
+            }
+        }        
+        function clearButton() {
+            if (confirm("Are you sure you want to clear all date (including match settings), please be sure to save data before continuing") == true){
+                localStorage.clear();
+                window.location.reload();
+            }
+        }
+        function deleteButton(){
+            archers.map(archer =>{
+                if (archer.toDelete == true) {
+                    archer.delete()
+                }  
+            })
+            window.location.reload();
+        }    
+        // Helper Functions
+        function loadData(e){
+            var file = e.target.files[0];
+            if (!file) {
+                return;
+            }
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var contents = e.target.result.split("\r\n");
+                if (contents[0] == "SETTINGS"){
+                    archers = [];
+                    localStorage.clear();
+                    let matchObj = (o = {}, [o.home, o.away, o.date, o.sortby, o.version] = contents[2].split(","), o)
+                    match = new Settings({...matchObj});
+                    for (let i = 5; i < contents.length; i++) {
+                        const id = "id" + Math.random().toString(26).slice(2)
+                        let archerObj = (o = {}, [o.targetNo, o.targetPos, o.name, o.team, o.bow, o.gender, o.age, o.classification, o.hc, o.round, o.hits, o.score, o.golds] = contents[i].split(","), o)
+                        archers.push(new Archer({...archerObj}));
+                    }
+                    window.location.reload();
+                }
+            };
+            reader.readAsText(file);
+        }     
+        function hideMain() {
+            // Hide all of the archers data, and elements that don't make sense without it
+            document.getElementById("archerList").hidden = true;
+            document.getElementById("data").hidden = true;
+            document.getElementById("addArchers").hidden = true;
+            document.getElementById("settings").hidden = true;
+            document.getElementById("howtoContainer").hidden = true;
+            // Hide the scoresheets, targetlist and results, whatever calls this function should unhide them 
+            document.getElementById("scoresheets").hidden = true;
+            document.getElementById("targetList").hidden = true;
+            document.getElementById("results").hidden = true;
+            // Show the back/unhide button, centre the print div
+            document.getElementById("unhide").hidden = false;
+            document.getElementById("buttons").style.justifyContent="center";
+        }
+        function unhideMain() {
+            // Hide the scoresheets, targetlist and results
+            document.getElementById("scoresheets").hidden = true;
+            document.getElementById("targetList").hidden = true;
+            document.getElementById("results").hidden = true;
+            // Show all of the archers data, and associated elements
+            document.getElementById("archerList").hidden = false;
+            document.getElementById("data").hidden = false;
+            document.getElementById("addArchers").hidden = false;
+            document.getElementById("settings").hidden = false;
+            document.getElementById("howtoContainer").hidden = false;
+            // Hide the back/unhide button
+            document.getElementById("unhide").hidden = true;
+            document.getElementById("buttons").removeAttribute("style");
+            // Remove forced print orientation
+            document.getElementById("orientation").innerHTML = "";
+        }
+        // Add event listeners that can't be elsewhere
+        document.getElementById('file-input').addEventListener('change', loadData, false);
+    </script>
+</body>
+</html>
